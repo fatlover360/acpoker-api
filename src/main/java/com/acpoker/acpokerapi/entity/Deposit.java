@@ -14,6 +14,10 @@ public class Deposit {
     private double amount;
     @Column(name = "date")
     private Date date;
+    @Column(name = "month")
+    private String month;
+    @Column(name = "year")
+    private int year;
     @ManyToOne
     private User user;
 
