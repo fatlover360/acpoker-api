@@ -19,7 +19,7 @@ public class Cash {
     @Column(name = "month")
     private String month;
     @Column(name = "date")
-    private Date date;
+    private long date;
     @ManyToOne
     private User user;
 
@@ -31,11 +31,11 @@ public class Cash {
         this.user = user;
     }
 
-    public Date getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

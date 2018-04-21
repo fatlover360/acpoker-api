@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public void createUser() {
-        userService.createUser();
+    public void createUser(@RequestBody User user) {
+        userService.createUser(user);
     }
 }

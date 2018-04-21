@@ -24,4 +24,9 @@ public class CashoutController {
         return cashoutService.findByUserAndDate(uid,month,year);
     }
 
+    @PostMapping("/add")
+    public void addCashout(@RequestBody Cashout cashout){
+        cashoutService.add(cashout);
+    }
+
 }

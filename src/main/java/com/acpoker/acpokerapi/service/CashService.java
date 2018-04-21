@@ -6,6 +6,7 @@ import com.acpoker.acpokerapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,14 +22,9 @@ public class CashService {
         return cashRepository.findByUser(userRepository.findUserByUid(uid));
     }
 
-    public void createCash(String uid, Double amount, Integer year, String month, Integer day) {
-        Cash c = new Cash();
-        c.setAmount(amount);
-        c.setDay(day);
-        c.setMonth(month);
-        c.setYear(year);
-        c.setUser(userRepository.findUserByUid(uid));
-        cashRepository.save(c);
+    public void createCash(Cash cash) {
+        long date = cash.getDate();
+        cashRepository.save(cash);
     }
 
     public List<Cash> findByUserYearAndMonth(String uid, int year, String month) {

@@ -1,11 +1,8 @@
 package com.acpoker.acpokerapi.controller;
 
 import com.acpoker.acpokerapi.entity.Cash;
-import com.acpoker.acpokerapi.repository.CashRepository;
-
 import com.acpoker.acpokerapi.service.CashService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +14,8 @@ public class CashController {
     @Autowired
     private CashService cashService;
 
-    @GetMapping("/{uid}")
-    public List<Cash> findByUser(@Param("uid") String uid) {
+    @GetMapping("/find/{uid}")
+    public List<Cash> findByUser(@PathVariable("uid") String uid) {
         return cashService.findByUser(uid);
     }
 
@@ -27,8 +24,8 @@ public class CashController {
         return cashService.findByUserYearAndMonth(uid, year, month);
     }
 
-    @PostMapping("/add/{uid}/{amount}/{year}/{month}/{day}")
-    public void createCash(@PathVariable("uid") String uid, @PathVariable("amount") Double amount, @PathVariable("year") Integer year, @PathVariable("month") String month, @PathVariable("day") Integer day) {
-        cashService.createCash(uid, amount, year, month, day);
+    @PostMapping("/add")
+    public void createCash(@RequestBody Cash cash) {
+        cashService.createCash(cash);
     }
 }

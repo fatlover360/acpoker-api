@@ -23,11 +23,7 @@ public class UserService {
         return userRepository.findUserByUid(uid);
     }
 
-    public void createUser() {
-        User u = new User();
-       // u.setId(1);
-        u.setUid(String.valueOf(new Random().nextInt()));
-        u.setDate(new Date());
-        userRepository.save(u);
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 }

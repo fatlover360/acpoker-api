@@ -24,4 +24,8 @@ public class CashoutService {
     public List<Cashout> findByUserAndDate(String uid, String month, Integer year) {
         return cashoutRepository.findByUserAndMonthAndYear(userRepository.findUserByUid(uid), month, year);
     }
+
+    public void add(Cashout cashout) {
+        cashoutRepository.save(cashout);
+    }
 }
