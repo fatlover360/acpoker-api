@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RangeModelRepository extends JpaRepository<RangeModel,Integer> {
 
-    List<RangeModel> findByTypeAndPosition(String type, String position);
+    List<RangeModel> findByTypeAndPositionAndBlindAndGameType(String type, String position,String blind, String gametype);
 
     List<RangeModel> findByType(String type);
 

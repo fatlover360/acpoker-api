@@ -21,6 +21,26 @@ public class RangeModel {
     private String type;
     @Column(name = "position")
     private String position;
+    @Column(name = "blind")
+    private String blind;
+    @Column(name = "gametype")
+    private String gameType;
+
+    public String getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
+    }
+
+    public String getBlind() {
+        return blind;
+    }
+
+    public void setBlind(String blind) {
+        this.blind = blind;
+    }
 
     public String getPosition() {
         return position;

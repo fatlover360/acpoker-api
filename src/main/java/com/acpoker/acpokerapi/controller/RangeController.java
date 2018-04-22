@@ -30,9 +30,14 @@ public class RangeController {
         return rangeService.addType(type);
     }
 
-    @GetMapping("/{type}/{position}")
-    public List<RangeModel> getRangesByType(@PathVariable("type") String type, @PathVariable("position") String position){
-        return rangeService.getRangesByTypeAndPosition(type, position);
+    @GetMapping("/find/{type}/{position}/{blind}/{gametype}")
+    public List<RangeModel> getRangesByType(@PathVariable("type") String type, @PathVariable("position") String position, @PathVariable("blind") String blind, @PathVariable("gametype") String gametype){
+        return rangeService.getRangesByTypeAndPosition(type, position, blind, gametype);
+    }
+
+    @DeleteMapping("/delete/{type}")
+    public boolean delete(@PathVariable("type") String type) {
+        return rangeService.remove(type);
     }
 
     @GetMapping("/types/all")
