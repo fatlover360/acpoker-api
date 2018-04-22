@@ -26,7 +26,7 @@ public class RangeService {
         try {
             LOGGER.info("ADDING DEFAULT RANGES");
             models.forEach(r-> r.setType(DEFAULT));
-            rangeModelRepository.save(models);
+            rangeModelRepository.saveAll(models);
             return true;
         }catch (Exception e){
             LOGGER.error("ERROR WHILE ADDING DEFAULT RANGES", e);
@@ -42,7 +42,7 @@ public class RangeService {
     public boolean addRange(List<RangeModel> ranges) {
         try {
             LOGGER.info("ADDING RANGES");
-            rangeModelRepository.save(ranges);
+            rangeModelRepository.saveAll(ranges);
             return true;
         }catch (Exception e){
             LOGGER.error("ERROR WHILE ADDING RANGES", e);
@@ -87,7 +87,7 @@ public class RangeService {
 
     public boolean remove(String type) {
         List<RangeModel> list = rangeModelRepository.findByType(type);
-        rangeModelRepository.delete(list);
+        rangeModelRepository.deleteAll(list);
 
         typeRepository.findAll().forEach(s -> {
             if(s.getType().equals(type)) {
