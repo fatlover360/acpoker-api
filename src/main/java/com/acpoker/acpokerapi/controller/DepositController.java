@@ -15,16 +15,19 @@ public class DepositController {
     private DepositService depositService;
 
     @GetMapping("/find/{year}/{month}")
+    @CrossOrigin(value = "*")
     public List<Deposit> findByYearAndMonth(@PathVariable("month") String month, @PathVariable("year") Integer year) {
         return depositService.findByMonthAndYear(month, year);
     }
 
     @GetMapping("/find/{year}")
+    @CrossOrigin(value = "*")
     public List<Deposit> findByYear(@PathVariable("year") Integer year) {
         return depositService.findByYear(year);
     }
 
     @PostMapping("/add")
+    @CrossOrigin(value = "*")
     public void addDeposit(@RequestBody Deposit deposit){
         depositService.addDeposit(deposit);
     }

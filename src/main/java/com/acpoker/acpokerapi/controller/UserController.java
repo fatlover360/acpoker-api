@@ -15,16 +15,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/all")
+    @CrossOrigin(value = "*")
     public List<User> findAll(){
         return userService.findAll();
     }
 
     @GetMapping("/{uid}")
+    @CrossOrigin(value = "*")
     public User findByUid(@PathVariable(value = "uid") String uid){
         return userService.findByUid(uid);
     }
 
     @PostMapping("/add")
+    @CrossOrigin(value = "*")
     public void createUser(@RequestBody User user) {
         userService.createUser(user);
     }

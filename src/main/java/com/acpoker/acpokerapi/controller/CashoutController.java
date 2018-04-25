@@ -15,16 +15,19 @@ public class CashoutController {
     private CashoutService cashoutService;
 
     @GetMapping("/{uid}")
+    @CrossOrigin(value = "*")
     public List<Cashout> findAllByuser(@PathVariable("uid") String uid){
         return cashoutService.findByUser(uid);
     }
 
     @GetMapping("/{uid}/{month}/{year}")
+    @CrossOrigin(value = "*")
     public List<Cashout> findAllByUserAndDate(@PathVariable("uid") String uid, @PathVariable("month") String month, @PathVariable("year") Integer year){
         return cashoutService.findByUserAndDate(uid,month,year);
     }
 
     @PostMapping("/add")
+    @CrossOrigin(value = "*")
     public void addCashout(@RequestBody Cashout cashout){
         cashoutService.add(cashout);
     }

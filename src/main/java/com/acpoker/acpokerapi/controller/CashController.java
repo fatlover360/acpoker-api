@@ -15,16 +15,19 @@ public class CashController {
     private CashService cashService;
 
     @GetMapping("/find/{uid}")
+    @CrossOrigin(value = "*")
     public List<Cash> findByUser(@PathVariable("uid") String uid) {
         return cashService.findByUser(uid);
     }
 
     @GetMapping("/{uid}/{year}/{month}")
+    @CrossOrigin(value = "*")
     public List<Cash> findByUserYearAndMonth(@PathVariable("uid") String uid, @PathVariable("year") int year, @PathVariable("month") String month) {
         return cashService.findByUserYearAndMonth(uid, year, month);
     }
 
     @PostMapping("/add")
+    @CrossOrigin(value = "*")
     public void createCash(@RequestBody Cash cash) {
         cashService.createCash(cash);
     }
