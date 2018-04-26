@@ -89,8 +89,10 @@ public class RangeService {
     public boolean remove(String type) {
         List<RangeModel> list = rangeModelRepository.findByType(type);
         rangeModelRepository.deleteAll(list);
-
+        LOGGER.info("ANTES FIND ALL");
         typeRepository.findAll().forEach(s -> {
+            LOGGER.info("DENTRO FIND ALL");
+            LOGGER.info(s.getType());
             if(s.getType().equals(type)) {
                 typeRepository.delete(s);
             }
