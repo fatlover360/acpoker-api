@@ -78,6 +78,7 @@ public class RangeService {
                     range.setPercentage(withPos.getPercentage());
                     range.setBlind(withPos.getBlind());
                     range.setGameType(withPos.getGameType());
+                    range.setColor(withPos.getColor());
                 }
             });
         });

@@ -25,6 +25,16 @@ public class RangeModel {
     private String blind;
     @Column(name = "gametype")
     private String gameType;
+    @Column(name = "color")
+    private String color;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public String getGameType() {
         return gameType;
