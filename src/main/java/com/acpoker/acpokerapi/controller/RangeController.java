@@ -45,10 +45,10 @@ public class RangeController {
         return rangeService.remove(type);
     }
 
-    @GetMapping("/types/all")
+    @GetMapping("/types/all/{gametype}")
     @CrossOrigin(value = "*")
-    public List<Type> getAllTypes(){
-        return rangeService.getTypes();
+    public List<Type> getAllTypes(@PathVariable String gametype){
+        return rangeService.getTypes(gametype);
     }
 
     @GetMapping("/default")

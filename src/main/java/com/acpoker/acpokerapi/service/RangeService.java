@@ -60,8 +60,8 @@ public class RangeService {
         }
     }
 
-    public List<Type> getTypes() {
-        return typeRepository.findAll();
+    public List<Type> getTypes(String gametype) {
+        return typeRepository.findTypesByGameType(gametype);
     }
 
     public List<RangeModel> getRangesByTypeAndPosition(String type, String position, String blind, String gametype) {

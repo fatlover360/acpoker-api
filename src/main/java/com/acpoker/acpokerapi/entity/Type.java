@@ -13,6 +13,16 @@ public class Type {
     private String type;
     @Column(name = "color")
     private String color;
+    @Column(name = "gametype")
+    private String gameType;
+
+    public String getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
+    }
 
     public int getId() {
         return id;
