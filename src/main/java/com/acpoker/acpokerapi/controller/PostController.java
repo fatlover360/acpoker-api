@@ -33,16 +33,16 @@ public class PostController {
         return postService.addComment(comment);
     }
 
-    @DeleteMapping("/comment/delete")
+    @RequestMapping(value = "/comment/delete/{id}", method = RequestMethod.DELETE)
     @CrossOrigin(value = "*")
-    public boolean deleteComment(@RequestBody Comment comment){
-        return postService.deleteComment(comment);
+    public boolean deleteComment(@PathVariable("id") Integer id){
+        return postService.deleteComment(id);
     }
 
-    @GetMapping("/comments/all")
+    @GetMapping("/comments/all/{id}")
     @CrossOrigin(value = "*")
-    public List<Comment> findAllComments(@RequestBody Post post) {
-        return postService.findAllComments(post);
+    public List<Comment> findAllComments(@PathVariable("id") Integer id) {
+        return postService.findAllComments(id);
     }
 
     @GetMapping("/all")

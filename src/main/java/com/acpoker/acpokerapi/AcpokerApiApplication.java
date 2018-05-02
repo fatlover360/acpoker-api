@@ -12,7 +12,7 @@ public class AcpokerApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AcpokerApiApplication.class, args);
-		String log4jConfPath = "C:\\Projects\\Spring\\acpoker-api\\src\\main\\resources\\log4j.properties";
+		String log4jConfPath = "C:\\Users\\joao.vieira\\Desktop\\acpkr\\acpoker-api\\src\\main\\resources\\log4j.properties";
 		PropertyConfigurator.configure(log4jConfPath);
 	}
 }

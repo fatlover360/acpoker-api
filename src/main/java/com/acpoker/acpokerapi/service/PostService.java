@@ -88,6 +88,12 @@ public class PostService {
                 }
             }
 
+            if(contentArray[i].toLowerCase().contains("blinds") && i > 10) {
+                game.setBigBlind(new BigDecimal(contentArray[i].split("\\(")[1].split("-")[0].split("/")[0].replace(".", "")));
+                game.setSmallBlind(new BigDecimal(contentArray[i].split("\\(")[1].split("-")[0].split("/")[1].replace(",","").trim()));
+                game.setAnte(new BigDecimal(contentArray[i].split("\\(")[1].split("-")[1].replace(")", "").trim()));
+            }
+
             if (contentArray[i].toLowerCase().contains("*")) {
                 if (contentArray[i].toLowerCase().contains("flop")) {
                     String firstCard = contentArray[i].split(" ")[5].replace(',', ' ').trim();
@@ -105,7 +111,7 @@ public class PostService {
         }
         game.setSeats(seatList);
 
-        for (int i = 0; i < contentArray.length; i++) {
+       /* for (int i = 0; i < contentArray.length; i++) {
             if (contentArray[i].toLowerCase().contains("shows")) {
                 String user = contentArray[i].split(" ")[0].trim();
                 String cardOne = contentArray[i].split(" ")[3].replace(',', ' ').trim();
@@ -118,7 +124,7 @@ public class PostService {
                     }
                 });
             }
-        }
+        }*/
 
         return game;
     }
@@ -128,13 +134,13 @@ public class PostService {
         return true;
     }
 
-    public List<Comment> findAllComments(Post post) {
+    public List<Comment> findAllComments(Integer id) {
+        Post post = postRepository.findPostById(id);
         return commentRepository.findCommentsByPost(post);
     }
 
-    public boolean deleteComment(Comment comment) {
-        commentRepository.delete(comment);
+    public boolean deleteComment(Integer id) {
+        commentRepository.delete(commentRepository.findCommentById(id));
         return true;
-
     }
 }

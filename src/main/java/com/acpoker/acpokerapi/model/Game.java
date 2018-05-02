@@ -1,5 +1,6 @@
 package com.acpoker.acpokerapi.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Game {
@@ -8,6 +9,78 @@ public class Game {
     private String flop;
     private String turn;
     private String river;
+    private BigDecimal smallBlind;
+    private BigDecimal bigBlind;
+    private BigDecimal ante;
+    private String myHand;
+    private List<Action> preFlopActions;
+    private List<Action> flopActions;
+    private List<Action> turnActions;
+    private List<Action> riverActions;
+
+    public BigDecimal getSmallBlind() {
+        return smallBlind;
+    }
+
+    public void setSmallBlind(BigDecimal smallBlind) {
+        this.smallBlind = smallBlind;
+    }
+
+    public BigDecimal getBigBlind() {
+        return bigBlind;
+    }
+
+    public void setBigBlind(BigDecimal bigBlind) {
+        this.bigBlind = bigBlind;
+    }
+
+    public BigDecimal getAnte() {
+        return ante;
+    }
+
+    public void setAnte(BigDecimal ante) {
+        this.ante = ante;
+    }
+
+    public String getMyHand() {
+        return myHand;
+    }
+
+    public void setMyHand(String myHand) {
+        this.myHand = myHand;
+    }
+
+    public List<Action> getPreFlopActions() {
+        return preFlopActions;
+    }
+
+    public void setPreFlopActions(List<Action> preFlopActions) {
+        this.preFlopActions = preFlopActions;
+    }
+
+    public List<Action> getFlopActions() {
+        return flopActions;
+    }
+
+    public void setFlopActions(List<Action> flopActions) {
+        this.flopActions = flopActions;
+    }
+
+    public List<Action> getTurnActions() {
+        return turnActions;
+    }
+
+    public void setTurnActions(List<Action> turnActions) {
+        this.turnActions = turnActions;
+    }
+
+    public List<Action> getRiverActions() {
+        return riverActions;
+    }
+
+    public void setRiverActions(List<Action> riverActions) {
+        this.riverActions = riverActions;
+    }
 
     public List<Seat> getSeats() {
         return seats;

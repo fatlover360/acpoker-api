@@ -11,7 +11,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
-    @Column(name = "content")
+    @Column(name = "content", length = 2000)
     private String content;
     @Column(name = "date")
     private Date date;
