@@ -95,6 +95,12 @@ public class PostService {
             }
 
             if (contentArray[i].toLowerCase().contains("*")) {
+                if(contentArray[i].toLowerCase().contains("down")) {
+                    game.setMyNick(contentArray[i + 1].split(" ")[2]);
+                    String myHand = contentArray[i + 1].split(" ")[5] + " " + contentArray[i + 1].split(" ")[6];
+                    game.setMyHand(myHand);
+
+                }
                 if (contentArray[i].toLowerCase().contains("flop")) {
                     String firstCard = contentArray[i].split(" ")[5].replace(',', ' ').trim();
                     String secondCard = contentArray[i].split(" ")[6].replace(',', ' ').trim();

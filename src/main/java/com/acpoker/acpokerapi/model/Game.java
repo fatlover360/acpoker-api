@@ -13,10 +13,19 @@ public class Game {
     private BigDecimal bigBlind;
     private BigDecimal ante;
     private String myHand;
+    private String myNick;
     private List<Action> preFlopActions;
     private List<Action> flopActions;
     private List<Action> turnActions;
     private List<Action> riverActions;
+
+    public String getMyNick() {
+        return myNick;
+    }
+
+    public void setMyNick(String myNick) {
+        this.myNick = myNick;
+    }
 
     public BigDecimal getSmallBlind() {
         return smallBlind;
