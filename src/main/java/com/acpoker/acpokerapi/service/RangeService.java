@@ -39,7 +39,7 @@ public class RangeService {
         return rangeModelRepository.findByType(DEFAULT);
     }
 
-    public boolean addRange(List<RangeModel> ranges) {
+    public boolean addRange(Iterable<RangeModel> ranges) {
         try {
             LOGGER.info("ADDING RANGES");
             rangeModelRepository.saveAll(ranges);
@@ -98,6 +98,11 @@ public class RangeService {
             }
         });
 
+        return true;
+    }
+
+    public boolean addTypes(List<Type> types) {
+        typeRepository.saveAll(types);
         return true;
     }
 }

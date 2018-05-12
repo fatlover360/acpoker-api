@@ -1,0 +1,12 @@
+[{"id":172, "color":"", "gametype":"Static Ranges", "type":"RFIN"},
+ {"id":951, "color":"", "gametype":"BB Ranges", "type":"BB Defesa"},
+ {"id":952, "color":"", "gametype":"BB Ranges", "type":"BB Resteal "},
+ {"id":953, "color":"", "gametype":"BB Ranges", "type":"SB 3bet"},
+ {"id":4112, "color":"", "gametype":"Static Ranges", "type":"BU-CALL"},
+ {"id":2616, "color":"", "gametype":"Static Ranges", "type":"12BB Shove"},
+ {"id":3109, "color":"", "gametype":"Static Ranges", "type":"14BB Shove"},
+ {"id":3561, "color":"", "gametype":"Static Ranges", "type":"10BBShove"},
+ {"id":4113, "color":"", "gametype":"Static Ranges", "type":"CO-CALL"},
+ {"id":4114, "color":"", "gametype":"Static Ranges", "type":"HJ-CALL"},
+ {"id":4597, "color":"", "gametype":"BB Ranges", "type":"SB Resteal"},
+ {"id":5112, "color":"", "gametype":"BB Ranges", "type":"BB Defesa 3x"}]

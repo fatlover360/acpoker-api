@@ -2,6 +2,7 @@ package com.acpoker.acpokerapi.entity;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "rangemodel")
