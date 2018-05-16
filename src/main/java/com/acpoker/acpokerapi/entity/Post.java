@@ -25,6 +25,16 @@ public class Post {
     private String uid;
     @Column(name = "username")
     private String username;
+    @Column(name = "pokerhouse")
+    private String pokerHouse;
+
+    public String getPokerHouse() {
+        return pokerHouse;
+    }
+
+    public void setPokerHouse(String pokerHouse) {
+        this.pokerHouse = pokerHouse;
+    }
 
     public String getUsername() {
         return username;

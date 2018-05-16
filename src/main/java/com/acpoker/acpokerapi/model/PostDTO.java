@@ -13,6 +13,15 @@ public class PostDTO {
     private int views;
     private String uid;
     private String username;
+    private String pokerHouse;
+
+    public String getPokerHouse() {
+        return pokerHouse;
+    }
+
+    public void setPokerHouse(String pokerHouse) {
+        this.pokerHouse = pokerHouse;
+    }
 
     public String getUsername() {
         return username;

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class Game {
+    private String pokerHouse;
     private List<Seat> seats;
     private int buttonSeat;
     private String flop;
@@ -18,6 +19,14 @@ public class Game {
     private List<Action> flopActions;
     private List<Action> turnActions;
     private List<Action> riverActions;
+
+    public String getPokerHouse() {
+        return pokerHouse;
+    }
+
+    public void setPokerHouse(String pokerHouse) {
+        this.pokerHouse = pokerHouse;
+    }
 
     public String getMyNick() {
         return myNick;
