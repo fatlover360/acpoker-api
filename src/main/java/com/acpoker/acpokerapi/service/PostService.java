@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,6 +74,9 @@ public class PostService {
         Game game = new Game();
         List<Seat> seatList = new ArrayList<>();
         List<Action> preFlopActionsList = new ArrayList<>();
+        List<Action> flopActionsList = new ArrayList<>();
+        List<Action> turnActionsList = new ArrayList<>();
+        List<Action> riverActionsList = new ArrayList<>();
 
         String[] contentArray = content.split("\n");
 
@@ -119,93 +123,35 @@ public class PostService {
             //PRE FLOP
             if (contentArray[i].toLowerCase().contains("*")) {
                 if (contentArray[i].toLowerCase().contains("down")) {
-                    game.setMyNick(contentArray[i + 1].split(" ")[2]);
-                    String myHand = contentArray[i + 1].split(" ")[5] + " " + contentArray[i + 1].split(" ")[6];
-                    game.setMyHand(myHand);
-
-                    for (int x = i + 2; x <= contentArray.length - 1; x++) {
-
-                        if (contentArray[x].toLowerCase().contains("*")) {
-                            break;
-                        }
-
-                        String[] preFlopActions = contentArray[x].split(" ");
-                        Action preFlopAction;
-                        String userName = "";
-
-                        for (int y = 0; y < preFlopActions.length; y++) {
-                            if (y == 0) {
-                                userName = preFlopActions[y];
-                            }
-
-                            if (!preFlopActions[y].toLowerCase().equals("folds") && !preFlopActions[y].toLowerCase().equals("checks") && !preFlopActions[y].toLowerCase().equals("calls")
-                                    && !preFlopActions[y].toLowerCase().equals("is") && !preFlopActions[y].toLowerCase().equals("folds") && !preFlopActions[y].toLowerCase().equals("raises") && y > 0) {
-                                if (preFlopActions[y].equals("[")) {
-                                    break;
-                                } else {
-                                    userName = userName + " " + preFlopActions[y];
-                                }
-                            }
-
-                            if (preFlopActions[y].toLowerCase().equals("folds")) {
-                                preFlopAction = new Action();
-                                preFlopAction.setBetAmount(new BigDecimal(0));
-                                preFlopAction.setUserName(userName);
-                                preFlopAction.setActionType(ActionType.FOLD);
-                                preFlopActionsList.add(preFlopAction);
-                            } else if (preFlopActions[y].toLowerCase().equals("checks")) {
-                                preFlopAction = new Action();
-                                preFlopAction.setBetAmount(new BigDecimal(0));
-                                preFlopAction.setUserName(userName);
-                                preFlopAction.setActionType(ActionType.CHECK);
-                                preFlopActionsList.add(preFlopAction);
-                            } else if (preFlopActions[y].toLowerCase().equals("calls")) {
-                                preFlopAction = new Action();
-                                preFlopAction.setUserName(userName);
-                                preFlopAction.setActionType(ActionType.CALL);
-                                String amount = preFlopActions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
-                                preFlopAction.setBetAmount(new BigDecimal(amount));
-                                preFlopActionsList.add(preFlopAction);
-                            } else if (preFlopActions[y].toLowerCase().equals("all-in")) {
-                                preFlopAction = new Action();
-                                preFlopAction.setUserName(userName);
-                                preFlopAction.setActionType(ActionType.ALLIN);
-                                String amount = preFlopActions[y + 2].replace("[", "").replace("]", "").replaceAll(",", "").trim();
-                                preFlopAction.setBetAmount(new BigDecimal(amount));
-                                preFlopActionsList.add(preFlopAction);
-                                preFlopActionsList.add(preFlopAction);
-                            } else if (preFlopActions[y].toLowerCase().equals("raises")) {
-                                preFlopAction = new Action();
-                                preFlopAction.setUserName(userName);
-                                preFlopAction.setActionType(ActionType.RAISE);
-                                String amount = preFlopActions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
-                                preFlopAction.setBetAmount(new BigDecimal(amount));
-                                preFlopActionsList.add(preFlopAction);
-                            }
-
-                        }
-
-                        game.setPreFlopActions(preFlopActionsList);
-                    }
+                  game = setActions(contentArray, i, preFlopActionsList, game, ActionPhase.PREFLOP);
                 }
                 if (contentArray[i].toLowerCase().contains("flop")) {
                     String firstCard = contentArray[i].split(" ")[5].replace(',', ' ').trim();
                     String secondCard = contentArray[i].split(" ")[6].replace(',', ' ').trim();
                     String thirdCard = contentArray[i].split(" ")[7].replace(',', ' ').trim();
                     game.setFlop(firstCard + " " + secondCard + " " + thirdCard);
+
+                    //ACTIONS ON FLOP
+                    game = setActions(contentArray, i, flopActionsList, game, ActionPhase.FLOP);
                 }
                 if (contentArray[i].toLowerCase().contains("turn")) {
                     game.setTurn(contentArray[i].split(" ")[5].trim());
+
+                    //ACTIONS ON TURN
+                    game = setActions(contentArray, i, turnActionsList, game, ActionPhase.TURN);
                 }
                 if (contentArray[i].toLowerCase().contains("river")) {
                     game.setRiver(contentArray[i].split(" ")[5].trim());
+
+                    //ACTIONS ON RIVER
+                    game = setActions(contentArray, i, riverActionsList, game, ActionPhase.RIVER);
                 }
             }
         }
         game.setPokerHouse(post.getPokerHouse());
         game.setSeats(seatList);
 
-       /* for (int i = 0; i < contentArray.length; i++) {
+        for (int i = 0; i < contentArray.length; i++) {
             if (contentArray[i].toLowerCase().contains("shows")) {
                 String user = contentArray[i].split(" ")[0].trim();
                 String cardOne = contentArray[i].split(" ")[3].replace(',', ' ').trim();
@@ -218,7 +164,104 @@ public class PostService {
                     }
                 });
             }
-        }*/
+        }
+
+        game.getSeats().sort(Comparator.comparingInt(Seat::getNumber));
+
+        return game;
+    }
+
+
+
+    private Game setActions(String [] contentArray, int i, List<Action> actionsList, Game game, ActionPhase actionPhase) {
+        int index;
+        if(actionPhase == ActionPhase.PREFLOP) {
+            game.setMyNick(contentArray[i + 1].split(" ")[2]);
+            String myHand = contentArray[i + 1].split(" ")[5] + " " + contentArray[i + 1].split(" ")[6];
+            game.setMyHand(myHand);
+
+            index = i + 2;
+        }else {
+            index = i + 1;
+        }
+
+        for (int x = index; x <= contentArray.length - 1; x++) {
+
+            if (contentArray[x].toLowerCase().contains("*")) {
+                break;
+            }
+
+            String[] actions = contentArray[x].split(" ");
+            Action action;
+            String userName = "";
+
+            for (int y = 0; y < actions.length; y++) {
+                if (y == 0) {
+                    userName = actions[y];
+                }
+
+                if (!actions[y].toLowerCase().equals("folds") && !actions[y].toLowerCase().equals("checks") && !actions[y].toLowerCase().equals("calls") && !actions[y].toLowerCase().equals("bets")
+                        && !actions[y].toLowerCase().equals("is") && !actions[y].toLowerCase().equals("folds") && !actions[y].toLowerCase().equals("raises") && y > 0) {
+                    if (actions[y].equals("[")) {
+                        break;
+                    } else {
+                        userName = userName + " " + actions[y];
+                    }
+                }
+                action = new Action();
+                if (actions[y].toLowerCase().equals("folds")) {
+                    action.setBetAmount(new BigDecimal(0));
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.FOLD);
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("checks")) {
+                    action.setBetAmount(new BigDecimal(0));
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.CHECK);
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("calls")) {
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.CALL);
+                    String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    action.setBetAmount(new BigDecimal(amount));
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("all-in")) {
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.ALLIN);
+                    String amount = actions[y + 2].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    action.setBetAmount(new BigDecimal(amount));
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("raises")) {
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.RAISE);
+                    String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    action.setBetAmount(new BigDecimal(amount));
+                    actionsList.add(action);
+                }else if (actions[y].toLowerCase().equals("bets")) {
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.BETS);
+                    String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    action.setBetAmount(new BigDecimal(amount));
+                    actionsList.add(action);
+                }
+
+            }
+
+            if(actionPhase == ActionPhase.PREFLOP){
+                game.setPreFlopActions(actionsList);
+            }
+            if(actionPhase == ActionPhase.FLOP){
+                game.setFlopActions(actionsList);
+            }
+            if(actionPhase == ActionPhase.TURN){
+                game.setTurnActions(actionsList);
+            }
+            if(actionPhase == ActionPhase.RIVER){
+                if(!actionsList.isEmpty())
+                game.setRiverActions(actionsList);
+            }
+
+        }
 
         return game;
     }
