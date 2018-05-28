@@ -31,6 +31,7 @@ public class PostService {
     private CommentRepository commentRepository;
 
     public Page<Post> findAll(Pageable pageable) {
+        LOGGER.info("LOOL");
         return postRepository.findAll(pageable);
     }
 

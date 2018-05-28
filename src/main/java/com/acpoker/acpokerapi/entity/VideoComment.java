@@ -24,7 +24,7 @@ public class VideoComment {
     @Column(name = "username")
     private String username;
     @ManyToOne
-    private Video Video;
+    private Video video;
 
     public String getUsername() {
         return username;
@@ -35,11 +35,11 @@ public class VideoComment {
     }
 
     public com.acpoker.acpokerapi.entity.Video getVideo() {
-        return Video;
+        return video;
     }
 
     public void setVideo(com.acpoker.acpokerapi.entity.Video video) {
-        Video = video;
+        video = video;
     }
 
     public int getId() {
