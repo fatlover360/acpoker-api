@@ -72,12 +72,11 @@ public class RangeController {
     }
 
     @GetMapping("/parse")
-
     public void parse() {
         try {
             JSONParser parser = new JSONParser();
 
-            Object obj = parser.parse(new FileReader("C:\\Projects\\Spring\\acpoker-api\\src\\main\\resources\\rangesUpdated.json"));
+            Object obj = parser.parse(new FileReader("C:\\Projects\\ACPOKER\\rangeModel_v0.1.json"));
 
             JSONArray jsonObject = (JSONArray) obj;
 
@@ -99,7 +98,7 @@ public class RangeController {
             }
 
             // List<RangeModel> rangeModels = ( List<RangeModel>)jsonObject;
-            FileWriter file = new FileWriter("C:\\Projects\\Spring\\acpoker-api\\src\\main\\resources\\rangesOK.json");
+            FileWriter file = new FileWriter("C:\\Projects\\ACPOKER\\rangeModel_v0.1_OK.json");
 
             file.write(jsonObject.toJSONString());
             file.flush();
