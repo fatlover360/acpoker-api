@@ -8,6 +8,33 @@ public class Seat {
     private String cardOne;
     private String cardTwo;
     private BigDecimal chips;
+    private boolean small;
+    private boolean big;
+    private boolean button;
+
+    public boolean isSmall() {
+        return small;
+    }
+
+    public void setSmall(boolean small) {
+        this.small = small;
+    }
+
+    public boolean isBig() {
+        return big;
+    }
+
+    public void setBig(boolean big) {
+        this.big = big;
+    }
+
+    public boolean isButton() {
+        return button;
+    }
+
+    public void setButton(boolean button) {
+        this.button = button;
+    }
 
     public String getCardOne() {
         return cardOne;

@@ -79,10 +79,15 @@ public class PostService {
         List<Action> turnActionsList = new ArrayList<>();
         List<Action> riverActionsList = new ArrayList<>();
 
+        String userSmall = "";
+        String userBig = "";
+        String userButton = "";
+
         String[] contentArray = content.split("\n");
 
         for (int i = 0; i < contentArray.length; i++) {
-            if (contentArray[i].toLowerCase().contains("seat")) {
+            int rowLength = contentArray[i].split(" ").length;
+            if (contentArray[i].toLowerCase().contains("seat") && i < 20) {
                 if (contentArray[i].contains(":")) {
                     Seat seat = new Seat();
 
@@ -96,8 +101,8 @@ public class PostService {
                             seat.setNumber(Integer.valueOf(userArray[k].replace(":", "")));
                             xx = k;
                         }
-                        if (userArray[k].equals("(")) {
-                            seat.setChips(new BigDecimal(userArray[k + 1].replaceAll(",", "")));
+                        if (userArray[k].contains("(")) {
+                            seat.setChips(new BigDecimal(userArray[k].replaceAll("\\(", "")));
                             yy = k;
                         }
                         if (k > xx && yy == 0) {
@@ -111,38 +116,46 @@ public class PostService {
                     seat.setUser(userName);
                     seatList.add(seat);
                 } else {
-                    game.setButtonSeat(Integer.valueOf(contentArray[i].split(" ")[1].trim()));
+                    game.setButtonSeat(Integer.valueOf(contentArray[i].split(" ")[5].replace("#", "").trim()));
                 }
             }
 
-            if (contentArray[i].toLowerCase().contains("blinds") && i > 10) {
-                game.setBigBlind(new BigDecimal(contentArray[i].split("\\(")[1].split("-")[0].split("/")[0].replace(".", "")));
-                game.setSmallBlind(new BigDecimal(contentArray[i].split("\\(")[1].split("-")[0].split("/")[1].replace(",", "").trim()));
-                game.setAnte(new BigDecimal(contentArray[i].split("\\(")[1].split("-")[1].replace(")", "").trim()));
+            if (contentArray[i].toLowerCase().contains("posts small blind") && i > 10) {
+                userSmall = contentArray[i].split(":")[0].replace(':', ' ').trim();
+                game.setSmallBlind(new BigDecimal(contentArray[i].split(" ")[rowLength - 1].trim()));
+            }
+
+            if (contentArray[i].toLowerCase().contains("posts big blind") && i > 10) {
+                userBig = contentArray[i].split(":")[0].replace(':', ' ').trim();
+                game.setBigBlind(new BigDecimal(contentArray[i].split(" ")[rowLength - 1].trim()));
+            }
+
+            if (contentArray[i].toLowerCase().contains("posts the ante") && i > 10) {
+                game.setAnte(new BigDecimal(contentArray[i].split(" ")[rowLength - 1].trim()));
             }
 
             //PRE FLOP
             if (contentArray[i].toLowerCase().contains("*")) {
-                if (contentArray[i].toLowerCase().contains("down")) {
-                  game = setActions(contentArray, i, preFlopActionsList, game, ActionPhase.PREFLOP);
+                if (contentArray[i].toLowerCase().contains("hole")) {
+                    game = setActions(contentArray, i, preFlopActionsList, game, ActionPhase.PREFLOP);
                 }
                 if (contentArray[i].toLowerCase().contains("flop")) {
-                    String firstCard = contentArray[i].split(" ")[5].replace(',', ' ').trim();
-                    String secondCard = contentArray[i].split(" ")[6].replace(',', ' ').trim();
-                    String thirdCard = contentArray[i].split(" ")[7].replace(',', ' ').trim();
+                    String firstCard = contentArray[i].split(" ")[3].replace('[', ' ').trim();
+                    String secondCard = contentArray[i].split(" ")[4].trim();
+                    String thirdCard = contentArray[i].split(" ")[5].replace(']', ' ').trim();
                     game.setFlop(firstCard + " " + secondCard + " " + thirdCard);
 
                     //ACTIONS ON FLOP
                     game = setActions(contentArray, i, flopActionsList, game, ActionPhase.FLOP);
                 }
                 if (contentArray[i].toLowerCase().contains("turn")) {
-                    game.setTurn(contentArray[i].split(" ")[5].trim());
+                    game.setTurn(contentArray[i].split(" ")[6].replace("[", "").replace("]", "").trim());
 
                     //ACTIONS ON TURN
                     game = setActions(contentArray, i, turnActionsList, game, ActionPhase.TURN);
                 }
                 if (contentArray[i].toLowerCase().contains("river")) {
-                    game.setRiver(contentArray[i].split(" ")[5].trim());
+                    game.setRiver(contentArray[i].split(" ")[7].replace("[", "").replace("]", "").trim());
 
                     //ACTIONS ON RIVER
                     game = setActions(contentArray, i, riverActionsList, game, ActionPhase.RIVER);
@@ -154,18 +167,47 @@ public class PostService {
 
         for (int i = 0; i < contentArray.length; i++) {
             if (contentArray[i].toLowerCase().contains("shows")) {
-                String user = contentArray[i].split(" ")[0].trim();
-                String cardOne = contentArray[i].split(" ")[3].replace(',', ' ').trim();
-                String cardTwo = contentArray[i].split(" ")[4].trim();
+                String user = contentArray[i].split(" ")[0].replace(':', ' ').trim();
+                String cardOne = contentArray[i].split(" ")[2].replace('[', ' ').trim();
+                String cardTwo = contentArray[i].split(" ")[3].replace(']', ' ').trim();
 
                 game.getSeats().forEach(seat -> {
-                    if(seat.getUser().equals(user)){
+                    if (seat.getUser().equals(user)) {
+                        seat.setCardOne(cardOne);
+                        seat.setCardTwo(cardTwo);
+                    }
+                });
+            }
+
+            if (contentArray[i].toLowerCase().contains("hole cards")) {
+                int myUserLength = contentArray[i + 1].split(" ").length;
+                String cardOne = contentArray[i + 1].split(" ")[myUserLength - 2].replace('[', ' ').trim();
+                String cardTwo = contentArray[i + 1].split(" ")[myUserLength - 1].replace(']', ' ').trim();
+                String myUser = game.getMyNick();
+
+                game.getSeats().forEach(seat -> {
+                    if (seat.getUser().equals(myUser)) {
                         seat.setCardOne(cardOne);
                         seat.setCardTwo(cardTwo);
                     }
                 });
             }
         }
+        String uSm = userSmall;
+        String uBm = userBig;
+        int buttonNbr = game.getButtonSeat();
+
+        game.getSeats().forEach(seat -> {
+            if (seat.getUser().equals(uSm)) {
+                seat.setSmall(true);
+            }
+            if (seat.getUser().equals(uBm)) {
+                seat.setBig(true);
+            }
+            if (seat.getNumber() == buttonNbr) {
+                seat.setButton(true);
+            }
+        });
 
         game.getSeats().sort(Comparator.comparingInt(Seat::getNumber));
 
@@ -173,16 +215,16 @@ public class PostService {
     }
 
 
-
-    private Game setActions(String [] contentArray, int i, List<Action> actionsList, Game game, ActionPhase actionPhase) {
+    private Game setActions(String[] contentArray, int i, List<Action> actionsList, Game game, ActionPhase actionPhase) {
         int index;
-        if(actionPhase == ActionPhase.PREFLOP) {
+        if (actionPhase == ActionPhase.PREFLOP) {
             game.setMyNick(contentArray[i + 1].split(" ")[2]);
-            String myHand = contentArray[i + 1].split(" ")[5] + " " + contentArray[i + 1].split(" ")[6];
+            String[] myInfo = contentArray[i + 1].split(" ");
+            String myHand = myInfo[myInfo.length - 2].replace("[", "") + " " + myInfo[myInfo.length - 1].replace("]", "");
             game.setMyHand(myHand);
 
             index = i + 2;
-        }else {
+        } else {
             index = i + 1;
         }
 
@@ -229,7 +271,7 @@ public class PostService {
                 } else if (actions[y].toLowerCase().equals("all-in")) {
                     action.setUserName(userName);
                     action.setActionType(ActionType.ALLIN);
-                    String amount = actions[y + 2].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    String amount = actions[2].trim();
                     action.setBetAmount(new BigDecimal(amount));
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("raises")) {
@@ -238,7 +280,7 @@ public class PostService {
                     String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
                     action.setBetAmount(new BigDecimal(amount));
                     actionsList.add(action);
-                }else if (actions[y].toLowerCase().equals("bets")) {
+                } else if (actions[y].toLowerCase().equals("bets")) {
                     action.setUserName(userName);
                     action.setActionType(ActionType.BETS);
                     String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
@@ -248,18 +290,18 @@ public class PostService {
 
             }
 
-            if(actionPhase == ActionPhase.PREFLOP){
+            if (actionPhase == ActionPhase.PREFLOP) {
                 game.setPreFlopActions(actionsList);
             }
-            if(actionPhase == ActionPhase.FLOP){
+            if (actionPhase == ActionPhase.FLOP) {
                 game.setFlopActions(actionsList);
             }
-            if(actionPhase == ActionPhase.TURN){
+            if (actionPhase == ActionPhase.TURN) {
                 game.setTurnActions(actionsList);
             }
-            if(actionPhase == ActionPhase.RIVER){
-                if(!actionsList.isEmpty())
-                game.setRiverActions(actionsList);
+            if (actionPhase == ActionPhase.RIVER) {
+                if (!actionsList.isEmpty())
+                    game.setRiverActions(actionsList);
             }
 
         }

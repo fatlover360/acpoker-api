@@ -13,7 +13,7 @@ public class Post {
     private int id;
     @Column(name = "title")
     private String title;
-    @Column(name = "content", length = 2000)
+    @Column(name = "content", length = 10000)
     private String content;
     @Column(name = "date")
     private Date date;
