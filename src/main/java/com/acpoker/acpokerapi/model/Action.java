@@ -3,16 +3,16 @@ package com.acpoker.acpokerapi.model;
 import java.math.BigDecimal;
 
 public class Action {
-    private BigDecimal betAmount;
+    private BigDecimal amount;
     private String userName;
     private ActionType actionType;
 
-    public BigDecimal getBetAmount() {
-        return betAmount;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setBetAmount(BigDecimal betAmount) {
-        this.betAmount = betAmount;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getUserName() {

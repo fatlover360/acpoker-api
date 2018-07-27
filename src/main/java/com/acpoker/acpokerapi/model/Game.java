@@ -19,8 +19,8 @@ public class Game {
     private List<Action> flopActions;
     private List<Action> turnActions;
     private List<Action> riverActions;
+    private List<Action> showDownActions;
     private BigDecimal finalPot;
-    private List<String> collectors;
 
     public BigDecimal getFinalPot() {
         return finalPot;
@@ -30,12 +30,12 @@ public class Game {
         this.finalPot = finalPot;
     }
 
-    public List<String> getCollectors() {
-        return collectors;
+    public List<Action> getShowDown() {
+        return showDownActions;
     }
 
-    public void setCollectors(List<String> collectors) {
-        this.collectors = collectors;
+    public void setShowDown(List<Action> showDown) {
+        this.showDownActions = showDown;
     }
 
     public String getPokerHouse() {

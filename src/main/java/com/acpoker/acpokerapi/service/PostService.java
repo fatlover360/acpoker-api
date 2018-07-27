@@ -1,10 +1,8 @@
 package com.acpoker.acpokerapi.service;
 
-import com.acpoker.acpokerapi.entity.Cards;
 import com.acpoker.acpokerapi.entity.Comment;
 import com.acpoker.acpokerapi.entity.Post;
 import com.acpoker.acpokerapi.model.*;
-import com.acpoker.acpokerapi.repository.CardsRepository;
 import com.acpoker.acpokerapi.repository.CommentRepository;
 import com.acpoker.acpokerapi.repository.PostRepository;
 import org.apache.log4j.Logger;
@@ -13,12 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class PostService {
@@ -78,6 +74,7 @@ public class PostService {
         List<Action> flopActionsList = new ArrayList<>();
         List<Action> turnActionsList = new ArrayList<>();
         List<Action> riverActionsList = new ArrayList<>();
+        List<Action> showDownActionsList = new ArrayList<>();
 
         String userSmall = "";
         String userBig = "";
@@ -160,6 +157,9 @@ public class PostService {
                     //ACTIONS ON RIVER
                     game = setActions(contentArray, i, riverActionsList, game, ActionPhase.RIVER);
                 }
+                if (contentArray[i].toLowerCase().contains("show down")) {
+                    game = setActions(contentArray, i, showDownActionsList, game, ActionPhase.SHOW_DOWN);
+                }
             }
         }
         game.setPokerHouse(post.getPokerHouse());
@@ -192,6 +192,11 @@ public class PostService {
                     }
                 });
             }
+            if (contentArray[i].toLowerCase().contains("total pot")) {
+                String amount = contentArray[i].split(" ")[2].trim();
+                game.setFinalPot(new BigDecimal(amount));
+            }
+
         }
         String uSm = userSmall;
         String uBm = userBig;
@@ -209,11 +214,12 @@ public class PostService {
             }
         });
 
+
+
         game.getSeats().sort(Comparator.comparingInt(Seat::getNumber));
 
         return game;
     }
-
 
     private Game setActions(String[] contentArray, int i, List<Action> actionsList, Game game, ActionPhase actionPhase) {
         int index;
@@ -244,7 +250,7 @@ public class PostService {
                 }
 
                 if (!actions[y].toLowerCase().equals("folds") && !actions[y].toLowerCase().equals("checks") && !actions[y].toLowerCase().equals("calls") && !actions[y].toLowerCase().equals("bets")
-                        && !actions[y].toLowerCase().equals("is") && !actions[y].toLowerCase().equals("folds") && !actions[y].toLowerCase().equals("raises") && y > 0) {
+                        && !actions[y].toLowerCase().equals("is") && !actions[y].toLowerCase().equals("folds") && !actions[y].toLowerCase().equals("collected") && !actions[y].toLowerCase().equals("raises") && y > 0) {
                     if (actions[y].equals("[")) {
                         break;
                     } else {
@@ -253,38 +259,59 @@ public class PostService {
                 }
                 action = new Action();
                 if (actions[y].toLowerCase().equals("folds")) {
-                    action.setBetAmount(new BigDecimal(0));
+                    userName = userName.replaceAll(":", "");
+                    action.setAmount(new BigDecimal(0));
                     action.setUserName(userName);
                     action.setActionType(ActionType.FOLD);
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("checks")) {
-                    action.setBetAmount(new BigDecimal(0));
+                    userName = userName.replaceAll(":", "");
+                    action.setAmount(new BigDecimal(0));
                     action.setUserName(userName);
                     action.setActionType(ActionType.CHECK);
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("calls")) {
+                    userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.CALL);
                     String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
-                    action.setBetAmount(new BigDecimal(amount));
+                    action.setAmount(new BigDecimal(amount));
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("all-in")) {
+                    userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.ALLIN);
                     String amount = actions[2].trim();
-                    action.setBetAmount(new BigDecimal(amount));
+                    action.setAmount(new BigDecimal(amount));
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("raises")) {
+                    userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.RAISE);
                     String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
-                    action.setBetAmount(new BigDecimal(amount));
+                    action.setAmount(new BigDecimal(amount));
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("bets")) {
+                    userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.BETS);
                     String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
-                    action.setBetAmount(new BigDecimal(amount));
+                    action.setAmount(new BigDecimal(amount));
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("collected")) {
+                    userName = userName.replaceAll(":", "");
+                    action.setUserName(userName);
+                    action.setActionType(ActionType.COLLECT);
+                    String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    action.setAmount(new BigDecimal(amount));
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("shows")) {
+                    action.setUserName(userName.split(":")[0]);
+                    action.setActionType(ActionType.SHOWS);
+                    actionsList.add(action);
+                } else if (actions[y].toLowerCase().equals("mucks")) {
+                    action.setUserName(userName.split(":")[0]);
+                    action.setActionType(ActionType.MUCKS);
                     actionsList.add(action);
                 }
 
@@ -297,11 +324,18 @@ public class PostService {
                 game.setFlopActions(actionsList);
             }
             if (actionPhase == ActionPhase.TURN) {
-                game.setTurnActions(actionsList);
+                if(!actionsList.isEmpty()) {
+                    game.setTurnActions(actionsList);
+                }
             }
             if (actionPhase == ActionPhase.RIVER) {
                 if (!actionsList.isEmpty())
                     game.setRiverActions(actionsList);
+            }
+            if (actionPhase == ActionPhase.SHOW_DOWN) {
+                if(!actionsList.isEmpty()) {
+                    game.setShowDown(actionsList);
+                }
             }
 
         }
