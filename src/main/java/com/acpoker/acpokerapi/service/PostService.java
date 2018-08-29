@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -241,6 +242,8 @@ public class PostService {
             }
 
             String[] actions = contentArray[x].split(" ");
+            List<String> act = Arrays.asList(contentArray[x].split(" "));
+
             Action action;
             String userName = "";
 
@@ -270,7 +273,7 @@ public class PostService {
                     action.setUserName(userName);
                     action.setActionType(ActionType.CHECK);
                     actionsList.add(action);
-                } else if (actions[y].toLowerCase().equals("calls")) {
+                } else if (actions[y].toLowerCase().equals("calls") && !act.contains("all-in")) {
                     userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.CALL);
@@ -278,20 +281,19 @@ public class PostService {
                     action.setAmount(new BigDecimal(amount));
                     actionsList.add(action);
                 } else if (actions[y].toLowerCase().equals("all-in")) {
-                    userName = userName.replaceAll(":", "");
-                    action.setUserName(userName);
+                    action.setUserName(userName.split(":")[0].replaceAll(":", ""));
                     action.setActionType(ActionType.ALLIN);
-                    String amount = actions[2].trim();
+                    String amount = actions[actions.length - 4].trim();
                     action.setAmount(new BigDecimal(amount));
                     actionsList.add(action);
-                } else if (actions[y].toLowerCase().equals("raises")) {
+                } else if (actions[y].toLowerCase().equals("raises") && !act.contains("all-in")) {
                     userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.RAISE);
-                    String amount = actions[y + 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
+                    String amount = actions[actions.length - 1].replace("[", "").replace("]", "").replaceAll(",", "").trim();
                     action.setAmount(new BigDecimal(amount));
                     actionsList.add(action);
-                } else if (actions[y].toLowerCase().equals("bets")) {
+                } else if (actions[y].toLowerCase().equals("bets") && !act.contains("all-in")) {
                     userName = userName.replaceAll(":", "");
                     action.setUserName(userName);
                     action.setActionType(ActionType.BETS);

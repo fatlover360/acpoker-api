@@ -76,7 +76,7 @@ public class RangeController {
         try {
             JSONParser parser = new JSONParser();
 
-            Object obj = parser.parse(new FileReader("C:\\Projects\\ACPOKER\\rangeModel_v0.1.json"));
+            Object obj = parser.parse(new FileReader("C:\\Projects\\ACPOKER\\rangemodelaws.json"));
 
             JSONArray jsonObject = (JSONArray) obj;
 
