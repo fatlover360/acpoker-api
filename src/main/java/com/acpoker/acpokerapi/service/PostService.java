@@ -32,9 +32,8 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
-    public boolean addPost(Post post) {
-        postRepository.save(post);
-        return true;
+    public Post addPost(Post post) {
+        return postRepository.save(post);
     }
 
     public boolean editPost(Post post) {

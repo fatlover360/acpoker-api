@@ -23,7 +23,7 @@ public class PostController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @CrossOrigin(value = "*")
-    public boolean addPost(@RequestBody Post post) {
+    public Post addPost(@RequestBody Post post) {
         return postService.addPost(post);
     }
 
